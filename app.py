@@ -68,7 +68,7 @@ for message in st.session_state.messages:
         with st.chat_message("assistant", avatar=icon):
             st.markdown(message["content"])
     else:
-        with st.chat_message(message["role"], avatar='https://api.dicebear.com/7.x/adventurer-neutral/svg?seed={}&backgroundColor=ecad80,f2d3b1,ffdfbf'.format(st.session_state.name)):
+        with st.chat_message(message["role"], avatar='https://api.dicebear.com/7.x/thumbs/svg?seed={}&backgroundColor=19c37d,1ed4a3&backgroundType=gradientLinear&shapeColor=0a5b83,1c799f'.format(st.session_state.name)):
             st.markdown(message["content"])
 if prompt := st.chat_input("Send a message"):
     st.session_state.messages.append({"role": "user", "content": prompt})
