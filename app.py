@@ -56,6 +56,7 @@ st.markdown('''
 
 with st.sidebar:
     st.session_state.selected_model = st.selectbox("Model", models)
+    st.session_state.instructions = st.text_area("Instructions", INSTRUCTIONS, height=330)
     if "messages" not in st.session_state:
         st.session_state.messages = []
         st.session_state.name = random.randbytes(10).hex()
@@ -77,7 +78,7 @@ if prompt := st.chat_input("Send a message"):
     with st.chat_message("assistant", avatar=icon):
         message_placeholder = st.empty()
         full_response = ""
-        messages = [{"role": "system", "content": INSTRUCTIONS}] + [{"role": m["role"], "content": m["content"]} for m in st.session_state.messages]
+        messages = [{"role": "system", "content": st.session_state.instructions}] + [{"role": m["role"], "content": m["content"]} for m in st.session_state.messages]
 
         for chunk in create_completion(model=st.session_state.selected_model, messages=messages):
             full_response += chunk
