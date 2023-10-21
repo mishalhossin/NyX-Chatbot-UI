@@ -10,9 +10,9 @@ openai.api_key = "null"
 openai.api_base = "https://nyx-beta.samirawm7.repl.co/openai"
 
 models = [
-    "mistralai/Mistral-7B-Instruct-v0.1",
     "meta-llama/Llama-2-70b-chat-hf",
     "jondurbin/airoboros-l2-70b-gpt4-1.4.1",
+    "mistralai/Mistral-7B-Instruct-v0.1",
 ]
 
 icon = io.BytesIO(open('assets/icon.png', 'rb').read())
@@ -59,9 +59,10 @@ st.markdown('''
 
 
 with st.sidebar:
-    selected_model = st.selectbox("Model", models)
+    st.session_state.selected_model = st.selectbox("Model", models)
     if "messages" not in st.session_state:
         st.session_state.messages = []
+        st.session_state.name = random.randbytes(10).hex()
     elif st.button("🗑️ Clear Session"):
         st.session_state.messages = []
 
@@ -71,18 +72,18 @@ for message in st.session_state.messages:
         with st.chat_message("assistant", avatar=icon):
             st.markdown(message["content"])
     else:
-        with st.chat_message(message["role"]):
+        with st.chat_message(message["role"], avatar='https://api.dicebear.com/7.x/adventurer-neutral/svg?seed={}&backgroundColor=ecad80,f2d3b1,ffdfbf'.format(st.session_state.name)):
             st.markdown(message["content"])
 if prompt := st.chat_input("Send a message"):
     st.session_state.messages.append({"role": "user", "content": prompt})
-    with st.chat_message("user"):
+    with st.chat_message("user", avatar='https://api.dicebear.com/7.x/thumbs/svg?seed={}&backgroundColor=19c37d,1ed4a3&backgroundType=gradientLinear&shapeColor=0a5b83,1c799f'.format(st.session_state.name)):
         st.markdown(prompt)
     with st.chat_message("assistant", avatar=icon):
         message_placeholder = st.empty()
         full_response = ""
         messages = [{"role": "system", "content": INSTRUCTIONS}] + [{"role": m["role"], "content": m["content"]} for m in st.session_state.messages]
 
-        for chunk in create_completion(model=selected_model, messages=messages):
+        for chunk in create_completion(model=st.session_state.selected_model, messages=messages):
             full_response += chunk
             message_placeholder.markdown(full_response + random.choice(["⬤", "●"]))
         message_placeholder.markdown(full_response)
