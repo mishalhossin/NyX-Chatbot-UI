@@ -5,9 +5,6 @@ import io
 import random
 from config import INSTRUCTIONS
 
-openai.api_key = "null"
-openai.api_base = "https://nyx-beta.samirawm7.repl.co/openai"
-
 models = [
     "meta-llama/Llama-2-70b-chat-hf",
     "jondurbin/airoboros-l2-70b-gpt4-1.4.1",
