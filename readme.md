@@ -49,7 +49,7 @@ You can configure the chatbot's behavior and appearance by modifying the `config
 
 ## Screenshots
 
-![](assets/screenshot.png)
+![image](https://github.com/mishalhossin/NyX-Chatbot-UI/assets/91066601/a4f54d96-1145-4904-b496-5793cd277897)
 
 ## Contributing
 
