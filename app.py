@@ -40,7 +40,11 @@ st.set_page_config(
     layout="wide",
     page_title="NyX Chatbot",
     page_icon=icon,
-    initial_sidebar_state="auto",
+    initial_sidebar_state="expanded",
+    menu_items={
+        'Report a bug': "https://github.com/mishalhossin/NyX-Chatbot-UI/issues/new",
+        'About': "This project provides a user-friendly web-based user interface for interacting with Nyx Chatbot"
+    }
 )
 
 st.markdown('''
@@ -56,7 +60,7 @@ st.markdown('''
 
 with st.sidebar:
     st.session_state.selected_model = st.selectbox("Model", models)
-    st.session_state.instructions = st.text_area("Instructions", INSTRUCTIONS, height=330)
+    st.session_state.instructions = st.text_area("Instructions", INSTRUCTIONS, height=300)
     if "messages" not in st.session_state:
         st.session_state.messages = []
         st.session_state.name = random.randbytes(10).hex()
