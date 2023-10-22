@@ -7,6 +7,10 @@ import openai
 from config import INSTRUCTIONS
 
 models = [
+    "gpt-3.5-turbo",
+    "gpt-3.5-turbo-16k",
+    "gpt-3.5-turbo-0613",
+    "gpt-3.5-turbo-16k-0613"
     "meta-llama/Llama-2-70b-chat-hf",
     "jondurbin/airoboros-l2-70b-gpt4-1.4.1",
     "mistralai/Mistral-7B-Instruct-v0.1",
@@ -54,8 +58,9 @@ st.markdown(
 ''', unsafe_allow_html=True)
 
 
-if api_key := st.sidebar.text_input("API key", placeholder="Get API key by running /generate_key", type='password'):
-    api_key = api_key.strip()
+api_key = st.sidebar.text_input("API key", placeholder="Get API key by running /generate_key", type='password').strip()
+input_api_key = True if api_key else False
+if input_api_key:
     with st.sidebar:
         st.session_state.selected_model = st.selectbox("Model", models)
         st.session_state.instructions = st.text_area("Instructions", INSTRUCTIONS, height=300)
