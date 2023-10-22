@@ -14,6 +14,7 @@ models = [
 icon = io.BytesIO(open('assets/icon.png', 'rb').read())
 logo = io.BytesIO(open('assets/logo.png', 'rb').read())
 
+@st.cache_resource
 def create_completion(messages, model):
     url = "https://nyx-beta.samirawm7.repl.co/openai/chat/completions"
 
@@ -47,7 +48,8 @@ st.set_page_config(
     }
 )
 
-st.markdown('''
+st.markdown(
+'''
 <style>
   [data-testid="stDecoration"] {
     display: none;
@@ -63,26 +65,30 @@ with st.sidebar:
     st.session_state.instructions = st.text_area("Instructions", INSTRUCTIONS, height=300)
     if "messages" not in st.session_state:
         st.session_state.messages = []
-        st.session_state.name = random.randbytes(10).hex()
-    elif st.button("🗑️ Clear Session"):
+        st.session_state.avatar = 'https://api.dicebear.com/7.x/thumbs/svg?seed={}&backgroundColor=19c37d,1ed4a3&backgroundType=gradientLinear&shapeColor=0a5b83,1c799f'.format(random.randbytes(5).hex())
+    elif st.button("Clear Session", use_container_width=True, type='primary'):
+        msg = st.toast('Clearing Session data...', icon='🗑️')
         st.session_state.messages = []
-
+        msg.toast("Cleared Session data", icon="🗑️")
+    st.caption("This project is licensed under the MIT License. See the [LICENSE](https://github.com/mishalhossin/NyX-Chatbot-UI/blob/main/LICENSE) file for details.")
+    
 for message in st.session_state.messages:
     if message["role"] == 'assistant':
         
         with st.chat_message("assistant", avatar=icon):
             st.markdown(message["content"])
     else:
-        with st.chat_message(message["role"], avatar='https://api.dicebear.com/7.x/thumbs/svg?seed={}&backgroundColor=19c37d,1ed4a3&backgroundType=gradientLinear&shapeColor=0a5b83,1c799f'.format(st.session_state.name)):
+        with st.chat_message(message["role"], avatar=st.session_state.avatar):
             st.markdown(message["content"])
+
 if prompt := st.chat_input("Send a message"):
     st.session_state.messages.append({"role": "user", "content": prompt})
-    with st.chat_message("user", avatar='https://api.dicebear.com/7.x/thumbs/svg?seed={}&backgroundColor=19c37d,1ed4a3&backgroundType=gradientLinear&shapeColor=0a5b83,1c799f'.format(st.session_state.name)):
+    with st.chat_message("user", avatar=st.session_state.avatar):
         st.markdown(prompt)
     with st.chat_message("assistant", avatar=icon):
         message_placeholder = st.empty()
         full_response = ""
-        messages = [{"role": "system", "content": st.session_state.instructions}] + [{"role": m["role"], "content": m["content"]} for m in st.session_state.messages[:8]]
+        messages = [{"role": "system", "content": st.session_state.instructions}] + [{"role": m["role"], "content": m["content"]} for m in st.session_state.messages]
 
         for chunk in create_completion(model=st.session_state.selected_model, messages=messages):
             full_response += chunk
