@@ -7,9 +7,6 @@ import openai
 from config import INSTRUCTIONS
 
 models = [
-    "gpt-3.5-turbo",
-    "gpt-3.5-turbo-16k",
-    "gpt-3.5-turbo-0613",
     "gpt-3.5-turbo-16k-0613",
     "meta-llama/Llama-2-70b-chat-hf",
     "jondurbin/airoboros-l2-70b-gpt4-1.4.1",
