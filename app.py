@@ -5,6 +5,7 @@ import io
 import random
 import openai
 from config import INSTRUCTIONS
+from helper_modules import search
 
 models = [
     "gpt-3.5-turbo-0613",
@@ -58,9 +59,8 @@ st.markdown(
 api_key = st.sidebar.text_input("API key", placeholder="Get API key by running /generate_key", type='password').strip()
 input_api_key = True if api_key else False
 if input_api_key:
-    with st.sidebar:
+    with st.sidebar:  
         st.session_state.selected_model = st.selectbox("Model", models)
-        st.session_state.instructions = st.text_area("Instructions", INSTRUCTIONS, height=300)
         if "messages" not in st.session_state:
             st.session_state.messages = []
             st.session_state.avatar = 'https://api.dicebear.com/7.x/thumbs/svg?seed={}&backgroundColor=19c37d,1ed4a3&backgroundType=gradientLinear&shapeColor=0a5b83,1c799f'.format(random.randbytes(5).hex())
@@ -68,6 +68,8 @@ if input_api_key:
             msg = st.toast('Clearing Session data...', icon='🗑️')
             st.session_state.messages = []
             msg.toast("Cleared Session data", icon="🗑️")
+        internet = st.toggle('Internet access')
+        st.session_state.instructions = st.text_area("Instructions", INSTRUCTIONS, height=300)
         st.caption("This project is licensed under the MIT License. See the [LICENSE](https://github.com/mishalhossin/NyX-Chatbot-UI/blob/main/LICENSE) file for details.")
         
     for message in st.session_state.messages:
@@ -87,7 +89,10 @@ if input_api_key:
             message_placeholder = st.empty()
             full_response = ""
             messages = [{"role": "system", "content": st.session_state.instructions}] + [{"role": m["role"], "content": m["content"]} for m in st.session_state.messages]
-
+            if internet:
+                search_results = search(prompt)
+                if search_results:
+                    messages.append({"role": "user", "content": search_results['content']})
             for chunk in create_completion(model=st.session_state.selected_model, messages=messages, api_key=api_key):
                 full_response += chunk
                 message_placeholder.markdown(full_response + random.choice(["⬤", "●"]))
