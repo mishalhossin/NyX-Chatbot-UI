@@ -17,20 +17,29 @@ models = [
 icon = io.BytesIO(open('assets/icon.png', 'rb').read())
 logo = io.BytesIO(open('assets/logo.png', 'rb').read())
 
-def create_completion(messages, model, api_key):
-    openai.api_key = api_key
-    openai.api_base = 'https://nyx-api.samirawm7.repl.co/openai'
+def create_completion(messages, model):
+    url = "https://nyx-beta.samirawm7.repl.co/openai/chat/completions"
 
-    completion = openai.ChatCompletion.create(
-        model=model,
-        messages=messages,
-        stream=True
-    )
-    for chunk in completion:
+    headers = {
+        "Content-Type": "application/json",
+    }
+
+    payload = {
+        "model": model,
+        "messages": messages,
+        "stream": True
+    }
+
+    with requests.post(url, headers=headers, json=payload, stream=True) as response:
         try:
-            yield chunk.choices[0].delta.content
-        except:
-            pass
+            for line in response.iter_lines():
+                if line:
+                    decoded = line.decode('utf-8').replace('data: ', '')
+                    if decoded != '[DONE]':
+                        r = json.loads(decoded)
+                        if r['choices'][0]['finish_reason'] is None:
+                            yield r['choices'][0]['delta']['content']
+        except:pass
 
 st.set_page_config(
     layout="wide",
