@@ -25,13 +25,8 @@ def create_completion(messages, model, api_key):
     completion = openai.ChatCompletion.create(
         model=model,
         messages=messages,
-        stream=True
     )
-    for chunk in completion:
-        try:
-            yield chunk.choices[0].delta.content
-        except:
-            pass
+    yield completion.choices[0].message
 
 st.set_page_config(
     layout="wide",
