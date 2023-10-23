@@ -59,6 +59,7 @@ st.markdown(
 api_key = st.sidebar.text_input("API key", placeholder="Get API key by running /generate_key", type='password').strip()
 input_api_key = True if api_key else False
 if input_api_key:
+    internet = st.toggle('Internet access')
     with st.sidebar:  
         st.session_state.selected_model = st.selectbox("Model", models)
         if "messages" not in st.session_state:
@@ -68,8 +69,7 @@ if input_api_key:
             msg = st.toast('Clearing Session data...', icon='🗑️')
             st.session_state.messages = []
             msg.toast("Cleared Session data", icon="🗑️")
-        internet = st.toggle('Internet access')
-        st.session_state.instructions = st.text_area("Instructions", INSTRUCTIONS, height=300)
+        st.session_state.instructions = st.text_area("Instructions", INSTRUCTIONS, height=200)
         st.caption("This project is licensed under the MIT License. See the [LICENSE](https://github.com/mishalhossin/NyX-Chatbot-UI/blob/main/LICENSE) file for details.")
         
     for message in st.session_state.messages:
