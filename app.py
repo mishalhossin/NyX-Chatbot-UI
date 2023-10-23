@@ -8,10 +8,10 @@ from config import INSTRUCTIONS
 from helper_modules import search
 
 models = [
-    "gpt-3.5-turbo-0613",
     "meta-llama/Llama-2-70b-chat-hf",
     "jondurbin/airoboros-l2-70b-gpt4-1.4.1",
     "mistralai/Mistral-7B-Instruct-v0.1",
+    "gpt-3.5-turbo-0613",
 ]
 
 icon = io.BytesIO(open('assets/icon.png', 'rb').read())
