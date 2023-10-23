@@ -11,12 +11,12 @@ models = [
     "meta-llama/Llama-2-70b-chat-hf",
     "jondurbin/airoboros-l2-70b-gpt4-1.4.1",
     "mistralai/Mistral-7B-Instruct-v0.1",
+    "gpt-3.5-turbo-0613",
 ]
 
 icon = io.BytesIO(open('assets/icon.png', 'rb').read())
 logo = io.BytesIO(open('assets/logo.png', 'rb').read())
 
-@st.cache_resource
 def create_completion(messages, model, api_key):
     openai.api_key = api_key
     openai.api_base = 'https://nyx-api.samirawm7.repl.co/openai'
@@ -24,8 +24,13 @@ def create_completion(messages, model, api_key):
     completion = openai.ChatCompletion.create(
         model=model,
         messages=messages,
+        stream=True
     )
-    yield completion.choices[0].message
+    for chunk in completion:
+        try:
+            yield chunk.choices[0].delta.content
+        except:
+            pass
 
 st.set_page_config(
     layout="wide",
@@ -87,7 +92,8 @@ if input_api_key:
                 search_results = search(prompt)
                 if search_results:
                     messages.append({"role": "user", "content": search_results['content']})
-                full_response = create_completion(model=st.session_state.selected_model, messages=messages, api_key=api_key)
+            for chunk in create_completion(model=st.session_state.selected_model, messages=messages, api_key=api_key):
+                full_response += chunk
                 message_placeholder.markdown(full_response + random.choice(["⬤", "●"]))
             message_placeholder.markdown(full_response)
             st.session_state.messages.append({"role": "assistant", "content": full_response})
