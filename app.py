@@ -3,7 +3,6 @@ import requests
 import json
 import io
 import random
-import openai
 from config import INSTRUCTIONS
 from helper_modules import search
 
@@ -18,7 +17,7 @@ icon = io.BytesIO(open('assets/icon.png', 'rb').read())
 logo = io.BytesIO(open('assets/logo.png', 'rb').read())
 
 def create_completion(messages, model):
-    url = "https://nyx-beta.samirawm7.repl.co/openai/chat/completions"
+    url = "https://nyx-api.samirawm7.repl.co/openai/chat/completions"
 
     headers = {
         "Content-Type": "application/json",
